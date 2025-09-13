@@ -1,7 +1,7 @@
 1 er probleme : A la decompression si le dernier entier n'est pas rempli on a des entiers 0 qui ressortent qui n'etaient pas dans le tableau de base
 solution :  ? taille original ?
             - stocker le nombre d'entiers dans le tableau compresse
-? stocker le nombre de bits utilises pour representer chaque entier
+? stocker le nombre de bits utilises pour representer chaque entier                                 DONE
     -> ou ? le tableau compresse ?  
         - on peur le mettre au debut du tableau compresse, sur 6 bits car un entier peut faire au max 32 bits
 
@@ -13,5 +13,13 @@ Methode 1 : On recupere le max de l'array, on calcule le nombre de bits necessai
     On convertit chaque morceau en entier et on le stocke dans un tableau d'entiers
     On retourne ce tableau d'entiers
     
-    Pour la decompression on fait l'inverse
-    Pour get(i) on recupere les bits de i*k a (i+1)*k-1 et on convertit en entier
+    Pour la decompression on commence par lire la taille des entiers dans le tableau compresse (6 premiers bits du premier entier)
+    Ensuite on recupere les entiers un par un en lisant k bits a la fois et en convertissant en entier
+    La liste est modifiee en place
+
+    Pour get(i) on
+
+    Reste un probleme : si le dernier entier n'est pas rempli on a des entiers 0 qui ressortent qui n'etaient pas dans le tableau de base
+    Solution : stocker le nombre d'entiers dans le tableau compresse ? pas ideal, si le tableau est tres grand
+                Interdire les 0 a la fin du tableau ? 
+========================================================================================================================
