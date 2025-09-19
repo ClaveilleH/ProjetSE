@@ -23,3 +23,21 @@ Methode 1 : On recupere le max de l'array, on calcule le nombre de bits necessai
     Solution : stocker le nombre d'entiers dans le tableau compresse ? pas ideal, si le tableau est tres grand
                 Interdire les 0 a la fin du tableau ? 
 ========================================================================================================================
+Methode 2 : On recupere le max de l'array, on calcule le nombre de bits necessaires pour representer ce max -> k
+    On choisit un k' < k
+    On ecrit k' dans les 6 premiers bits du tableau compresse
+    Puis k dans les 6 bits suivants
+    Puis la longueur du tableau d'entiers dans les 32 bits suivants         <------------- 32 ??
+    On parcourt le tableau d'entiers, pour chaque entier on regarde si il peut etre represente sur k' bits
+        Si oui on le convertit en binaire sur k' bits, on ajoute un bit de controle a 0 au debut
+        Si non on le remplace par son indice dans une liste de "grands entiers" (entiers qui ne peuvent pas etre representes sur k' bits)
+            On ajoute un bit de controle a 1 au debut, puis on ajoutera l'entier en binaire sur k bits a la fin du tableau compresse
+    On concatene tous les bits dans une chaine
+    On segmente cette chaine en morceaux de 32 bits
+    On convertit chaque morceau en entier et on le stocke dans un tableau d'entiers
+        
+
+
+    Trouver le meilleur compromis entre le nombre d'entiers a stocker et le nombre de bits par entier
+    il faut que ne nb d'entiers moins compresse rentre dans le codage d'un entierc compresse
+    on 
