@@ -41,3 +41,13 @@ Methode 2 : On recupere le max de l'array, on calcule le nombre de bits necessai
     Trouver le meilleur compromis entre le nombre d'entiers a stocker et le nombre de bits par entier
     il faut que ne nb d'entiers moins compresse rentre dans le codage d'un entierc compresse
     on 
+
+    Pour la decompression, plusieurs methodes possibles:
+        - 1 - Pour faire le premier prototype, j'ai commencé par décompresser la liste comme si il n'y avait pas 
+            de "grands entiers", mais a chaque "grand entier" rencontré, j'ai stocké son indice dans une liste.
+            Ensuite, j'ai parcouru cette liste d'indices et pour chaque indice, j'ai lu les bits nécessaires pour récupérer le "grand entier"
+            et je l'ai inséré à la place de l'indice dans la liste décompressée.
+            Cette méthode est simple à implémenter, mais elle nécessite de parcourir la liste décompressée deux fois.
+        
+        - 2 - 
+        

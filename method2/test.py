@@ -97,7 +97,7 @@ def compress_array2(arr: list, max_bits: int) -> str:
         output.append(int(bit_string[:SIZE_OF_INT], 2))
         bit_string = bit_string[SIZE_OF_INT:]
     if bit_string:
-        output.append(bit_string.ljust(SIZE_OF_INT, '0'))  # Pad the last chunk if necessary
+        output.append(int(bit_string.ljust(SIZE_OF_INT, '0'), 2))  # Pad the last chunk if necessary
     # output += overflow_list
     return output
 
@@ -139,7 +139,7 @@ def get(arr: list, i: int) -> int:
             # le bit est splitté entre deux entiers
             next_elem_overflow = arr[indice_overflow_bit // SIZE_OF_INT + 1]
             # print(type(next_elem_overflow))
-            # next_elem_overflow = get_bin(next_elem_overflow, SIZE_OF_INT)
+            next_elem_overflow = get_bin(next_elem_overflow, SIZE_OF_INT)
             elem_overflow += next_elem_overflow
         value_overflow = elem_overflow[indice_overflow_bit_in_elem:indice_overflow_bit_in_elem + big_max_bits]
         # elem_overflow = arr[arr_len* (max_bits + 1) // SIZE_OF_INT + indice_overflow * (big_max_bits // SIZE_OF_INT)]
@@ -149,8 +149,45 @@ def get(arr: list, i: int) -> int:
         #! la fin est dans un auree entier
     pass
 
-    
 
+def decompress_array(arr: list) -> list:
+    output = []
+    overflow_list = []
+    bit_string = get_bin(arr[0], SIZE_OF_INT)
+    max_bits = int(bit_string[:6], 2)
+    big_max_bits = int(bit_string[6:12], 2)
+    arr_len = int(bit_string[12:18], 2)
+    bit_string = bit_string[18:] # Remove the first 18 bits used for metadata
+    arr = arr[1:]
+    cpt = 0
+    print(f"max_bits={max_bits}, big_max_bits={big_max_bits}, arr_len={arr_len}")
+    while arr and cpt < arr_len:
+        print(f"--- Step {cpt} ---")
+        if len(bit_string) < max_bits + 1:
+            bit_string += get_bin(arr[0], SIZE_OF_INT)
+            arr = arr[1:]
+        current_bits = bit_string[:max_bits + 1]
+        bit_string = bit_string[max_bits + 1:]
+        print(f"bits : {current_bits} - {bit_string}")
+        if current_bits[0] == '0':
+            output.append(int(current_bits[1:], 2))
+        else:
+            pass
+            indice_overflow = int(current_bits[1:], 2)
+            output.append(indice_overflow)  # Placeholder, will be replaced later
+            overflow_list.append(len(output) - 1)  # Store the index to replace later
+        print(f"Decompressed so far: {output}")
+        cpt += 1
+    for i in overflow_list:
+        if len(bit_string) < big_max_bits:
+            bit_string += get_bin(arr[0], SIZE_OF_INT)
+            arr = arr[1:]
+        current_bits = bit_string[:big_max_bits]
+        bit_string = bit_string[big_max_bits:]
+        output[i] = int(current_bits, 2)
+    return output
+
+# affiche_bit_string(get_bin(1024, 12))
 
 if __name__ == "__main__":
     pass
@@ -160,6 +197,9 @@ if __name__ == "__main__":
     for i in range(7):
         get(aa, i)
     print("=========")
+    print(aa)
+    aa = decompress_array(aa)
+    print(aa)
     # affiche(arr)
     # compressed = compress_array(arr)
     # print("Compressed:")
