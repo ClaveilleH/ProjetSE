@@ -19,8 +19,6 @@ For example, if we want to encode the numbers 1, 2, 3, 1024, 4, 5, and 2048. We 
 
 """
 SIZE_OF_INT = 32  # Assuming a 32-bit integer representation
-arr = [1, 2, 3, 1024, 4, 5, 2048]
-max_bits = 3  # Example bit size for compression (3 bits for values 1-5, 11 bits for overflow values)
 
 def affiche_bit_string(bit_string: str) -> None:
     """affiche la chaine entier par entier"""
@@ -42,31 +40,9 @@ def get_bin(num: int, bits: int) -> str:
     """
     return f"{num:0{bits}b}"
 
-def compress_array(arr: list, max_bits: int) -> list:
-    output = []
-    bit_string = ""
-    nb_overflow = 0
-    overflow_list = []
-    big_max_bits = max(arr).bit_length()
-    bit_string += get_bin(max_bits, 6)
-    bit_string += get_bin(big_max_bits, 6)  
-    for num in arr:
-        # liste.append(get_bin(num, max_bits))
-        if num < 2**max_bits:
-            bit_string += '0' + get_bin(num, max_bits)
-        else:
-            bit_string += '1' + get_bin(nb_overflow, max_bits)
-            nb_overflow += 1
-            overflow_list.append(get_bin(num, SIZE_OF_INT))
-        output.append(bit_string)
-        print(f"Number: {num}, Binary: {bit_string}")
-        bit_string = ""
-    output += overflow_list
-    return output
 
-def compress_array2(arr: list, max_bits: int) -> str:
+def compress_array(arr: list, max_bits: int) -> str:
     "on essaie de tt mettre dans un string puis de le spliter"
-    #! coder la taille sur un int puis mettre les max bits
     output = []
     bit_string = ""
     nb_overflow = 0
@@ -127,6 +103,7 @@ def get(arr: list, i: int) -> int:
     # print(f"value={value}")
     if value[0] == '0':
         print(f"Value : 0 - {int(value[1:], 2)}")
+        return int(value[1:], 2)
     else:
         
         indice_overflow = int(value[1:], 2)
@@ -147,6 +124,7 @@ def get(arr: list, i: int) -> int:
         # print(f"Overflow index: {indice_overflow}, Overflow bit index: {indice_overflow_bit}, elem_overflow: {elem_overflow}, indice_overflow_bit_in_elem: {indice_overflow_bit_in_elem}")
         print(f"Value : 1 - {int(value[1:], 2)} --> {int(value_overflow, 2)}")
         #! la fin est dans un auree entier
+        return int(value_overflow, 2)
     pass
 
 
@@ -191,8 +169,11 @@ def decompress_array(arr: list) -> list:
 
 if __name__ == "__main__":
     pass
+    arr = [1, 2, 3, 1024, 4, 5, 2048]
+    max_bits = 3  # Example bit size for compression (3 bits for values 1-5, 11 bits for overflow values)
+
     # aa = compress_array(arr, max_bits)
-    aa = compress_array2(arr, max_bits)
+    aa = compress_array(arr, max_bits)
     print("=========")
     for i in range(7):
         get(aa, i)
@@ -234,5 +215,10 @@ def affiche_compressed(arr : list) -> None:
     
     # get(arr, 0)
         
+
+00
+01
+10
+11
 
 """

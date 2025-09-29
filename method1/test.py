@@ -8,7 +8,6 @@ For example, if we find that 12 bits are needed to represent 6 elements, then th
 - the sixth  integer compressed over bits 29 to 32 of the second integer output and over the first 8 bits of the third integer output
 """
 
-array = [1, 2, 3, 4, 5, 6]
 # maxBits = 12  # Example bit size for compression
 # maxBits = max(array).bit_length() # On recupère le nombre de bits nécessaires pour représenter le plus grand entier
 # print(f"Max value: {max(array)}, Max bits needed: {maxBits}")
@@ -51,24 +50,6 @@ def compress_array(arr : list) -> list:
             output.append(int(chaine.ljust(SIZE_OF_INT, '0'), 2))
             chaine = ""
     arr = output
-    return output
-
-def decompress_array(arr: list) -> list:
-    output = []
-    bit_string = ""
-    for num in arr:
-        bit_string += get_bin(num, SIZE_OF_INT)
-    
-    maxBits = int(bit_string[:6], 2)  # On récupère le nombre de bits utilisés pour chaque entier
-    print(f"Max bits per number: {maxBits}")
-    bit_string = bit_string[6:]  # On enlève les 6 premiers bits qui contiennent maxBits
-    while len(bit_string) != 0:
-        if len(bit_string) >= maxBits:
-            output.append(int(bit_string[:maxBits], 2))
-            bit_string = bit_string[maxBits:]
-        else:
-            output.append(int(bit_string.ljust(maxBits, '0'), 2))
-            bit_string = ""
     return output
 
 def decompress_array_en_place(arr: list) -> None:
@@ -116,6 +97,7 @@ def get(arr: list, i: int) -> int:
     return get_from_int(arr[indice // SIZE_OF_INT], indice % SIZE_OF_INT, maxBits)
     
 if __name__ == "__main__":
+    array = [1, 2, 3, 4, 5, 6]
     affiche(array)
     compressed = compress_array(array)
     affiche(compressed)
