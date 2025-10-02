@@ -20,8 +20,11 @@ Methode 1 : On recupere le max de l'array, on calcule le nombre de bits necessai
     Pour get(i) on
 
     Reste un probleme : si le dernier entier n'est pas rempli on a des entiers 0 qui ressortent qui n'etaient pas dans le tableau de base
-    Solution : stocker le nombre d'entiers dans le tableau compresse ? pas ideal, si le tableau est tres grand
+    Solution : stocker le nombre d'entiers dans le tableau compresse ? pas ideal, si le tableau est pas tres grand
                 Interdire les 0 a la fin du tableau ? 
+                - stoquer la taille du tableau dans les 32 premiers bits du tableau compresse
+                - OU stocker la taille de la taille du tableau dans les 6 premiers bits puis la taille du tableau dans les x bits suivants
+                    ca serait rentable tant que le tableau fait moins de 2^(32-6) = 2^26 = 67108864 entiers
 ========================================================================================================================
 Methode 2 : On recupere le max de l'array, on calcule le nombre de bits necessaires pour representer ce max -> k
     On choisit un k' < k

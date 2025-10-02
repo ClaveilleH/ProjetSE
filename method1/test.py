@@ -98,15 +98,16 @@ def get(arr: list, i: int) -> int:
     
 if __name__ == "__main__":
     array = [1, 2, 3, 4, 5, 6]
-    affiche(array)
-    compressed = compress_array(array)
-    affiche(compressed)
-    print("=========")
-    decompressed = decompress_array(compressed)
-    affiche(decompressed)
+    # affiche(array)
+    # compressed = compress_array(array)
+    # affiche(compressed)
+    # print("=========")
+    # decompressed = decompress_array(compressed)
+    # affiche(decompressed)
 
     print("=========")
     print("=========")
+    affiche(array)
     compressed_in_place = compress_array(array)
     for i in range(len(array)):
         print(get(compressed_in_place, i), end=' ')
@@ -115,3 +116,24 @@ if __name__ == "__main__":
     affiche(compressed_in_place)
     decompress_array_en_place(compressed_in_place)
     affiche(compressed_in_place)
+
+
+
+
+"""
+[1, 2, 3, 4, 5, 6] --> [196608, 50397184, 100663296] --> [1, 2, 3, 4, 5, 6]
+[1, 2, 3, 4, 5, 6] --> 000000 001, 010, 011, 100, 101, 110 --> 001010011100101110110, 001000000000... = 
+
+[1, ...., 1, 0, 0, 0]
+[1, ...., 1]
+
+[1, ...., 1, 0, 0, 1]
+[1, ...., 1, 0, 0, 0]
+
+sizeOfint:data
+    6    :data
+length:sizeOfint:data
+   32 :    6    :data
+len(length):length:sizeOfint:data
+   6       :  x   :    6    :data
+"""

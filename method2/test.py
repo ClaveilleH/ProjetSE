@@ -42,7 +42,22 @@ def get_bin(num: int, bits: int) -> str:
 
 
 def compress_array(arr: list, max_bits: int) -> str:
-    "on essaie de tt mettre dans un string puis de le spliter"
+    """
+    Compresse un tableau d'entiers en un tableau d'entiers compressés avec gestion des débordements.
+    ----------
+    :param arr: le tableau d'entiers à compresser
+    :param max_bits: le nombre de bits à utiliser pour les entiers normaux
+    :return: le tableau d'entiers compressés
+    1 bit pour indiquer si c'est un overflow ou pas + max_bits pour la valeur ou l'indice d'overflow
+    6 bits pour indiquer le max_bits
+    6 bits pour indiquer le big_max_bits
+    6 bits pour indiquer la taille du tableau
+    6 + 6 + 6 = 18 bits au début
+    1 + max_bits bits par entier
+    big_max_bits bits par entier en overflow
+    1 + max_bits <= SIZE_OF_INT
+    """
+    # "on essaie de tt mettre dans un string puis de le spliter"
     output = []
     bit_string = ""
     nb_overflow = 0
