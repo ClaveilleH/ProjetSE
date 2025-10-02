@@ -34,6 +34,7 @@ def get_bin(num: int, bits: int) -> str:
 def compress_array(arr : list) -> list:
     output = []
     maxBits = max(array).bit_length() # On recupère le nombre de bits nécessaires pour représenter le plus grand entier
+    print(f"Max value: {max(array)}, Max bits needed: {maxBits}")
     chaine = "" # on va passer par des chaines de texte pour faire les manipulations de bits
     chaine += get_bin(maxBits, 6) # on encode la taille des données sur 6 bits (max 32 = int)
     for num in arr:
@@ -50,25 +51,37 @@ def compress_array(arr : list) -> list:
             output.append(int(chaine.ljust(SIZE_OF_INT, '0'), 2))
             chaine = ""
     arr = output
+    print(get_bin(output[0], SIZE_OF_INT))
+    print(get_bin(output[0], SIZE_OF_INT)[:6], end=':')
+    print(get_bin(output[0], SIZE_OF_INT)[6:6+maxBits], end=':')
+    print(get_bin(output[0], SIZE_OF_INT)[6+maxBits:6+2*maxBits], end=':')
+    print(get_bin(output[0], SIZE_OF_INT)[6+2*maxBits:6+3*maxBits], end=':')
+    print(get_bin(output[0], SIZE_OF_INT)[6+3*maxBits:], end=' ')
+
+    print(get_bin(output[1], SIZE_OF_INT)[:maxBits-2], end=':')
+
+    print()
     return output
 
 def decompress_array_en_place(arr: list) -> None:
-    size = len(arr) # nombre d'entiers dans le tableau compressé
     bit_string = get_bin(arr.pop(0), SIZE_OF_INT) # on commence par le premier entier
-    size -= 1
+    size = len(arr) # nombre d'entiers dans le tableau compressé (- 1) parce qu'on a pop le premier
     maxBits = int(bit_string[:6], 2)  # On récupère les 6 premiers bits qui contiennent maxBits
-    bit_string = bit_string[6:]  
-    print(f"Max bits per number: {maxBits}")
-    while size >= 0 and len(bit_string) >= maxBits: # tant qu'on a pas tout lu
+    bit_string = bit_string[6:] 
+
+    while len(bit_string) >= maxBits or size>0 : # tant qu'on a pas tout lu
+
         if len(bit_string) < maxBits and size > 0:
             # on recupere le prochain entier
             bit_string += get_bin(arr.pop(0), SIZE_OF_INT)
             size -= 1
+            
         arr.append(int(bit_string[:maxBits], 2)) # on ajoute le nouvel entier décompressé
         bit_string = bit_string[maxBits:]
+
     if len(bit_string) > 0 :
         print("Last bits remaining:", bit_string)
-        # arr.append(int(bit_string.ljust(maxBits, '0'), 2))
+        
     return
 
 def get_from_int(num: int, start: int, length: int) -> int:
@@ -91,13 +104,50 @@ def get(arr: list, i: int) -> int:
     :param i: l'indice de l'entier à récupérer
     :return: l'entier à l'indice i
     """ 
+    bit_string = get_bin(arr[0], SIZE_OF_INT) # on recupere le premier entier
+    maxBits = int(bit_string[:6], 2)  # On récupère les 6 premiers bits qui contiennent maxBits
+    indice = i * maxBits + 6 # on calcule l'indice du bit à récupérer
+    indice_int = indice % SIZE_OF_INT
+    # if indice // SIZE_OF_INT >= len(arr):
+    #     raise IndexError("Index out of range")
+    if indice < 0:
+        raise IndexError("Index must be non-negative")
+    if  indice % SIZE_OF_INT + maxBits > SIZE_OF_INT: 
+        # si le nombre est sur deux entiers
+        
+        int1 = arr[indice // SIZE_OF_INT] 
+        int2 = arr[indice // SIZE_OF_INT + 1]
+        
+        part1 = get_bin(int1, SIZE_OF_INT)[indice_int:]
+        part2 = get_bin(int2, SIZE_OF_INT)[:maxBits - (SIZE_OF_INT - (indice_int))]
+
+        val = part1 + part2
+        return int(val, 2)
+        
+    return get_from_int(arr[indice // SIZE_OF_INT], indice % SIZE_OF_INT, maxBits)
+    
+def get_bin_from_int(num: int, start: int, length: int) -> str:
+    """
+    Fonction pour extraire une séquence de bits d'un entier.
+    ----------
+    :param num: l'entier source
+    :param start: la position de départ (0-indexée, de droite à gauche)
+    :param length: le nombre de bits à extraire
+    :return: la chaîne binaire correspondant à la séquence de bits extraite
+    """
+    bit_string = get_bin(num, SIZE_OF_INT)
+    return bit_string[start:start+length]
+
+def bin_get(arr: list, i:int) -> str:
     bit_string = get_bin(arr[0], SIZE_OF_INT) # on commence par le premier entier
     maxBits = int(bit_string[:6], 2)  # On récupère les 6 premiers bits qui contiennent maxBits
     indice = i * maxBits + 6 # on calcule l'indice du bit à récupérer
-    return get_from_int(arr[indice // SIZE_OF_INT], indice % SIZE_OF_INT, maxBits)
-    
+    return get_bin_from_int(arr[indice // SIZE_OF_INT], indice % SIZE_OF_INT, maxBits)
+
+
 if __name__ == "__main__":
-    array = [1, 2, 3, 4, 5, 6]
+    # array = [1, 2, 3, 4, 5, 6]
+    array = [1, 2, 3, 4, 5, 6, 100, 100, 200]
     # affiche(array)
     # compressed = compress_array(array)
     # affiche(compressed)
@@ -108,14 +158,17 @@ if __name__ == "__main__":
     print("=========")
     print("=========")
     affiche(array)
-    compressed_in_place = compress_array(array)
+    compressed = compress_array(array)
     for i in range(len(array)):
-        print(get(compressed_in_place, i), end=' ')
+        print(get(compressed, i), end=' ')
+    print()
+    for i in range(len(array)):
+        print(bin_get(compressed, i), end=' ')
     print("\n=========")
 
-    affiche(compressed_in_place)
-    decompress_array_en_place(compressed_in_place)
-    affiche(compressed_in_place)
+    affiche(compressed)
+    decompress_array_en_place(compressed)
+    affiche(compressed)
 
 
 

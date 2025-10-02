@@ -1,0 +1,98 @@
+\documentclass{rapportClass} % Classe de document (rapport)
+
+
+
+\title{Rapport de Projet}
+\author{Hugo CLAVEILLE}
+% -- Master 1 Informatique
+\date{\today}
+
+
+
+
+% Appliquer aussi aux pages de type 'plain' (début de chapitre, sommaire…)
+% \fancypagestyle{plain}{
+%   \fancyhf{}
+%   \fancyhead[L]{Rapport de Projet}
+%   \fancyhead[C]{M1 Informatique}
+%   \fancyhead[R]{Hugo}
+%   \fancyfoot[C]{\thepage}
+%   \renewcommand{\headrulewidth}{0.4pt}
+% }
+
+\begin{document}
+
+\begin{titlepage}
+    \thispagestyle{empty} % pas d'en-tête/pied ici
+    
+    \begin{center}
+        % Logo en haut
+        \includegraphics[width=1\textwidth]{logo.png}\\[2cm]
+        
+        % Titre
+        {\Huge \textbf{Rapport de Projet}}\\[1cm]
+        {\Large Software Engineering}\\[1cm]
+
+        \vspace{1cm}
+        % Auteur
+        \textbf{Hugo CLAVEILLE}\\[0.5cm]
+        
+        % Sous-titre
+        {\Large Master 1 Informatique}\\[2cm]
+        
+        % Date
+        \vfill
+        {\large \today}
+    \end{center}
+\end{titlepage}
+
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+\chapter{Introduction}
+Dans le cadre du module de Software Engineering 2025, il nous a été demandé de réaliser un projet individuel
+visant à étudier et implémenter des méthodes de transmission optimisée de données.
+La transmission de tableaux d’entiers constitue un problème fondamental dans de nombreux systèmes
+informatiques et réseaux, en particulier pour les applications nécessitant un échange rapide et
+efficace de grandes quantités de données. Ce projet s’inscrit donc dans un contexte pratique où
+la performance et l’efficacité des transferts d’information sont essentielles.
+
+
+L’objectif est d’étudier différentes méthodes de compression de ces tableaux afin de réduire le nombre
+de bits transmis tout en conservant un accès direct à chaque élément. La méthode choisie, appelée Bit Packing,
+représente chaque entier avec le minimum de bits nécessaires, regroupés ensuite dans des entiers standards
+pour la transmission. Deux variantes seront explorées : une autorisant l’écriture d’un entier compressé sur
+deux entiers consécutifs, et une qui ne le permet pas. Le projet inclut également la gestion des zones de
+débordement pour optimiser les valeurs extrêmes et des benchmarks pour évaluer les gains de performance.
+% \lipsum[1-5] % Texte factice pour l'introduction
+% \chapter{Introduction}
+% Ici tu présentes le contexte et les objectifs de ton projet.
+
+
+% \chapter{Travaux Réalisés}
+% Explique la méthodologie, les outils utilisés, ton code, etc.
+
+% \section{Outils utilisés}
+% Exemple d’outils : Python, C++, Git, Docker...
+
+% \section{Exemple de code}
+% Voici un exemple en LaTeX :
+% \begin{lstlisting}[language=C++]
+% #include <iostream>
+% using namespace std;
+
+% int main() {
+%     cout << "Hello World!";
+%     return 0;
+% }
+% \end{lstlisting}	
+
+% \chapter{Résultats}
+% Explique ce que tu as obtenu.
+
+% \chapter{Conclusion et Perspectives}
+% Résumé de ton projet et idées pour la suite.
+
+\end{document}
