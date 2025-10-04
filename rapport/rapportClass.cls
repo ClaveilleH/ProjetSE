@@ -66,3 +66,6 @@
 \renewcommand{\chaptermark}[1]{%
   \markboth{#1}{}%
 }
+
+
+\setlength{\parskip}{0.8em} % espace entre les paragraphes
