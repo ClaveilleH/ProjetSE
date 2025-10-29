@@ -19,7 +19,7 @@ class Method2Compressor(CompressorBase):
         bit_string += get_bin(big_max_bits, 6)
         arr_len = len(arr)
         bit_string += get_bin(arr_len, 6)
-        print(f"max_bits={self.config.max_bits}, big_max_bits={big_max_bits}, arr_len={arr_len}")
+        # print(f"max_bits={self.config.max_bits}, big_max_bits={big_max_bits}, arr_len={arr_len}")
         while arr:
             num = arr.pop(0)
             if num < 2 ** self.config.max_bits: # nombre normal
@@ -29,11 +29,11 @@ class Method2Compressor(CompressorBase):
                 nb_overflow += 1
                 overflow_list.append(get_bin(num, big_max_bits))
 
-        print("bitstring:")
-        for i in range(18, len(bit_string), self.config.max_bits + 1):
-            print(bit_string[i:i+self.config.max_bits + 1], end=' ')
-        print()
-        print("overflow list:", overflow_list)
+        # print("bitstring:")
+        # for i in range(18, len(bit_string), self.config.max_bits + 1):
+        #     print(bit_string[i:i+self.config.max_bits + 1], end=' ')
+        # print()
+        # print("overflow list:", overflow_list)
 
         for num in overflow_list:
             bit_string += num
@@ -68,13 +68,13 @@ class Method2Compressor(CompressorBase):
             bit_string = bit_string[max_bits + 1:]
             if current_bits[0] == '0':
                 arr.append(int(current_bits[1:], 2))
-                print(f"0 - {int(current_bits[1:], 2)}")
+                # print(f"0 - {int(current_bits[1:], 2)}")
             else:
-                print(f"1 - {int(current_bits[1:], 2)} -->")
+                # print(f"1 - {int(current_bits[1:], 2)} -->")
                 indice_overflow = int(current_bits[1:], 2)
                 arr.append(indice_overflow)         # il faut mettre un nombre quelconque
                 overflow_list.append(cpt)           # stock l'indice a remplacer plus tard
-            print(arr)
+            # print(arr)
             cpt += 1
 
         while arr_len > 0:

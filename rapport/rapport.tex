@@ -65,7 +65,7 @@ représente chaque entier avec le minimum de bits nécessaires, regroupés ensui
 pour la transmission. Deux variantes seront explorées : une autorisant l’écriture d’un entier compressé sur
 deux entiers consécutifs, et une qui ne le permet pas. Le projet inclut également des benchmarks pour évaluer les gains de performance.
 
---> La gestion des débordements (overflow) est un aspect crucial de ce projet. En effet, lorsque les entiers à compresser
+La gestion des débordements (overflow) est un aspect crucial de ce projet. En effet, lorsque les entiers à compresser
 dépasse la capacité de bits allouée, il est nécessaire de mettre en place une stratégie efficace pour gérer ces cas.
 La méthode choisie consiste à utiliser des entiers supplémentaires pour stocker les valeurs qui ne peuvent pas être représentées
 dans le format compressé initial. Cette approche permet de maintenir l’intégrité des données tout en optimisant l’espace de stockage.
