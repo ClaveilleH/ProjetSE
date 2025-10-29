@@ -53,6 +53,8 @@ Methode 2 : On recupere le max de l'array, on calcule le nombre de bits necessai
             Cette méthode est simple à implémenter, mais elle nécessite de parcourir la liste décompressée deux fois.
         
         - 2 - 
+
+autre probleme : il faut vider tout les entiers de la liste avant d'insérer les overflows
         
 ========================================================================================================================
 je viens de me rendre compte que j'avais pas bien compris la consigne, je recommence donc a partir de l'ancienne 

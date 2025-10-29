@@ -1,32 +1,16 @@
 from typing import List, Optional
 from .base import CompressorBase, Config
-from .utils import get_bin, SIZE_OF_INT
 import importlib
+from .utils import get_bin, SIZE_OF_INT
 
 # _method1 = importlib.import_module("Method1")
 
 
-class Method1Compressor(CompressorBase):
+class Method2Compressor(CompressorBase):
     def __init__(self, config: Optional[Config] = None) -> None:
         super().__init__(config)
 
-    def compress(self, arr: List[int]) -> List[int]:
-        """
-        Meme chose que compress_array mais compresse en place
-        Cette fois, les nombres ne peuvent pas chevaucher plusieurs entiers.
-        ----------
-        :param arr: le tableau d'entiers à compresser
-        :param max_bits: le nombre de bits à utiliser pour les entiers normaux
-        :return: None
-        1 bit pour indiquer si c'est un overflow ou pas + max_bits pour la valeur ou l'indice d'overflow
-        6 bits pour indiquer le max_bits
-        6 bits pour indiquer le big_max_bits
-        6 bits pour indiquer la taille du tableau
-        6 + 6 + 6 = 18 bits au début
-        1 + max_bits bits par entier
-        big_max_bits bits par entier en overflow
-        """
-        first_int = ""
+    def compress(self, arr: List[int]) -> None:
         bit_string = ""
         nb_overflow = 0
         overflow_list = []
@@ -35,63 +19,32 @@ class Method1Compressor(CompressorBase):
         bit_string += get_bin(big_max_bits, 6)
         arr_len = len(arr)
         bit_string += get_bin(arr_len, 6)
-        nb_of_nb_on_int = SIZE_OF_INT // (self.config.max_bits + 1) # nombre de nombres pouvant tenir dans un entier
-        to_compress= []
-
-        first_int +=  get_bin(self.config.max_bits, 6)
-        first_int +=  get_bin(big_max_bits, 6)
-        first_int +=  get_bin(arr_len, 6)
-        first_int = first_int.ljust(SIZE_OF_INT, '0')
         print(f"max_bits={self.config.max_bits}, big_max_bits={big_max_bits}, arr_len={arr_len}")
-        print(f"nb_of_nb_on_int={nb_of_nb_on_int}")
-        print(f"bit_string start: {bit_string[:6]}:{bit_string[6:12]}:{bit_string[12:18]}:{bit_string[18:]}")
-        while arr :
+        while arr:
             num = arr.pop(0)
-            if num < 2**self.config.max_bits:
-                # bit_string += '0' + get_bin(num, max_bits)
-                txt = '0' + get_bin(num, self.config.max_bits)
-                print(f"Normal: {num}, Binary: \t0{get_bin(num, self.config.max_bits)}")
-                to_compress.append(txt)
-            else:
-                # bit_string += '1' + get_bin(nb_overflow, max_bits)
-                # nb_overflow += 1
-                # overflow_list.append(get_bin(num, big_max_bits))
-                txt = '1' + get_bin(nb_overflow, self.config.max_bits)
-                to_compress.append(txt)
+            if num < 2 ** self.config.max_bits: # nombre normal
+                bit_string += '0' + get_bin(num, self.config.max_bits)
+            else: # overflow
+                bit_string += '1' + get_bin(nb_overflow, self.config.max_bits)
                 nb_overflow += 1
                 overflow_list.append(get_bin(num, big_max_bits))
-                
-                print(f"Overflow: {num}, Binary: \t{get_bin(num, big_max_bits)}")
-            print(f"Number: {num}, Binary: \t{bit_string[:6]}:{bit_string[6:12]}:{bit_string[12:18]}:{bit_string[18:]}")
-        print("1>>",bit_string)
-        # for num in overflow_list:
-        #     bit_string += num
-        print("2>>",bit_string)
-        # affiche_bit_string(bit_string)
-        arr.clear() # Clear the original array to fill it with compressed data
-        arr.append(int(first_int, 2))
-        while to_compress:
-            if len(to_compress) >= nb_of_nb_on_int:
-                chunk = to_compress[:nb_of_nb_on_int]
-                to_compress = to_compress[nb_of_nb_on_int:]
-            else:
-                chunk = to_compress
-                to_compress = []
-            txt = ""
-            for num in chunk:
-                txt += num
-            # Pad the chunk to SIZE_OF_INT if necessary
-            txt = txt.ljust(SIZE_OF_INT, '0')
-            arr.append(int(txt, 2))
-            print(f"Appending compressed int: {txt} -> {int(txt, 2)}")
+
+        print("bitstring:")
+        for i in range(18, len(bit_string), self.config.max_bits + 1):
+            print(bit_string[i:i+self.config.max_bits + 1], end=' ')
+        print()
+        print("overflow list:", overflow_list)
 
         for num in overflow_list:
-            txt = num
-            # Pad the chunk to SIZE_OF_INT if necessary
-            arr.append(int(txt, 2))
-            # print(f"Appending overflow int: {txt} -> {int(txt, 2)}")
+            bit_string += num
+        arr.clear()
+        while len(bit_string) >= SIZE_OF_INT:
+            arr.append(int(bit_string[:SIZE_OF_INT], 2))
+            bit_string = bit_string[SIZE_OF_INT:]
+        if bit_string:
+            arr.append(int(bit_string.ljust(SIZE_OF_INT, '0'), 2))  # Pad the last chunk if necessary
 
-    def decompress(self, arr: List[int]) -> List[int]:
+    def decompress(self, arr: List[int]) -> None:
         """
         Décompresse un tableau d'entiers compressés en un tableau d'entiers originaux 
         En place
@@ -100,48 +53,42 @@ class Method1Compressor(CompressorBase):
         :return: None
         """
         overflow_list = []                              # liste des indices des elements en overflow
-
-        first_int = arr.pop(0)
-        bit_string = get_bin(first_int, SIZE_OF_INT)   # on recupere le premier entier
+        bit_string = get_bin(arr.pop(0), SIZE_OF_INT)   # on recupere le premier entier
         max_bits = int(bit_string[:6], 2)               # on recupere la taille des entiers normaux
         big_max_bits = int(bit_string[6:12], 2)         # on recupere la taille des entiers en overflow
-        arr_len = int(bit_string[12:18], 2)           # on recupere la taille du tableau
-        
-        nb_of_nb_on_int = SIZE_OF_INT // (max_bits + 1) # nombre de nombres pouvant tenir dans un entier
-
-        bit_string = ""
-
-
-        temp = [0] * arr_len  # tableau temporaire pour stocker les valeurs décompressées
+        nb_of_int = int(bit_string[12:18], 2)           # on recupere la taille du tableau
+        bit_string = bit_string[18:]                    # Remove the first 18 bits used for metadata
+        arr_len = len(arr)
         cpt = 0
-        while len(arr) > 0 and cpt < arr_len:
-            current_int = arr.pop(0)
-            string_int = get_bin(current_int, SIZE_OF_INT)
-            split_strings = [string_int[i:i + (max_bits + 1)] for i in range(0, SIZE_OF_INT, max_bits + 1)]
-            for s in split_strings:
-                if len(s) < max_bits + 1:
-                    break
-                if s[0] == '0':
-                    bit_string += s
-                    temp[cpt] = int(s[1:], 2)
-                else:
-                    indice_overflow = int(s[1:], 2)
-                    temp[cpt] = indice_overflow  # Placeholder, will be replaced later
-                    bit_string += s
-                    overflow_list.append(cpt)           # stock l'indice a remplacer plus tard
-                cpt += 1
-                if cpt >= arr_len:
-                    print("Reached the end of the original array length.") # on est pas censé lire plus que la taille originale
-                    break
-        
+        while (arr_len > 0 or len(bit_string) >= max_bits + 1) and cpt < nb_of_int:
+            if len(bit_string) < max_bits + 1:
+                bit_string += get_bin(arr.pop(0), SIZE_OF_INT)
+                arr_len -= 1
+            current_bits = bit_string[:max_bits + 1]
+            bit_string = bit_string[max_bits + 1:]
+            if current_bits[0] == '0':
+                arr.append(int(current_bits[1:], 2))
+                print(f"0 - {int(current_bits[1:], 2)}")
+            else:
+                print(f"1 - {int(current_bits[1:], 2)} -->")
+                indice_overflow = int(current_bits[1:], 2)
+                arr.append(indice_overflow)         # il faut mettre un nombre quelconque
+                overflow_list.append(cpt)           # stock l'indice a remplacer plus tard
+            print(arr)
+            cpt += 1
+
+        while arr_len > 0:
+            bit_string += get_bin(arr.pop(0), SIZE_OF_INT)
+            arr_len -= 1
 
         for i in overflow_list:
-            temp[i] = arr.pop(0)
-        
-        arr.clear()
-        arr.extend(temp)
+            if len(bit_string) < big_max_bits:
+                raise ValueError("Not enough bits to read overflow value")
+            current_bits = bit_string[:big_max_bits]
+            bit_string = bit_string[big_max_bits:]
+            arr[i] = int(current_bits, 2)
 
-    def get(self, arr: List[int], index: int) -> int:
+    def get(self, compressed_data: List[int], index: int) -> int:
         """
         Récupère l'élément à l'indice i du tableau compressé arr.
         ----------
@@ -149,55 +96,64 @@ class Method1Compressor(CompressorBase):
         :param i: l'indice de l'élément à récupérer
         :return: l'élément à l'indice i
         """
-        overflow_list = []                              # liste des indices des elements en overflow
-
-        first_int = arr[0]
-        bit_string = get_bin(first_int, SIZE_OF_INT)   # on recupere le premier entier
-        max_bits = int(bit_string[:6], 2)               # on recupere la taille des entiers normaux
-        big_max_bits = int(bit_string[6:12], 2)         # on recupere la taille des entiers en overflow
-        arr_len = int(bit_string[12:18], 2)           # on recupere la taille du tableau
+        bit_string = get_bin(compressed_data[0], SIZE_OF_INT)   # on recupere le premier entier
+        max_bits = int(bit_string[:6], 2)           # on recupere la taille des entiers normaux
+        big_max_bits = int(bit_string[6:12], 2)     # on recupere la taille des entiers en overflow 
+        arr_len = int(bit_string[12:18], 2)         # on recupere la taille du tableau
+        indice_elem = index * (max_bits + 1) + 18       # on calcule l'indice du i-eme element dans la chaine de bits
         
-        nb_of_nb_on_int = SIZE_OF_INT // (max_bits + 1) # nombre de nombres pouvant tenir dans un entier
-
-        bit_string = ""
-
-        if index >= arr_len:
-            print(f"Index {index} out of range (array length: {arr_len})")
+        if arr_len <= index:
             raise IndexError("Index out of range")
-
-        indice_elem = index // nb_of_nb_on_int + 1 # +1 car on a enleve le premier entier
-        # on calcule l'indice du i-eme element dans la chaine de bits
-        indice_int = index % nb_of_nb_on_int
-        print(f"Getting index {index}: elem_index={indice_elem}, int_index={indice_int} in array of length {arr_len}")
-
-        current_int = arr[indice_elem]
-        string_int = get_bin(current_int, SIZE_OF_INT)
-        from_bit = indice_int * (max_bits + 1)
-        to_bit = from_bit + (max_bits + 1)
-        value = string_int[from_bit:to_bit]
+        
+        indice_liste = indice_elem // SIZE_OF_INT   # indice de l'entier
+        indice_bit = indice_elem % SIZE_OF_INT      # indice dans l'entier
+        if indice_bit + max_bits + 1 > SIZE_OF_INT:
+            # le bit est splitté entre deux entiers
+            next_elem = compressed_data[indice_liste + 1]
+            next_elem = get_bin(next_elem, SIZE_OF_INT)
+            elem = compressed_data[indice_liste]
+            elem = get_bin(elem, SIZE_OF_INT)
+            elem += next_elem
+        else:
+            elem = compressed_data[indice_liste]
+            elem = get_bin(elem, SIZE_OF_INT)
+        
+        value = elem[indice_bit:indice_bit + max_bits + 1]
+        # if self.config.debug: print(f"elem={elem}")
+        # if self.config.debug: print(f"value={value}")
         if value[0] == '0':
+            # if self.config.debug: print(f"Value : 0 - {int(value[1:], 2)}")
             return int(value[1:], 2)
         
-
-
-
         # value[0] == '1'
         indice_overflow = int(value[1:], 2)
-        overflow_start = arr_len // nb_of_nb_on_int + 2  # indice du debut de l'overflow dans le tableau arr
-        return arr[overflow_start + indice_overflow]
+        overflow_start = arr_len * (max_bits + 1) + 18  # 18 pour les 3x6 bits du début
+        indice_overflow_bit = overflow_start + indice_overflow * big_max_bits # indice du debut de l'overflow dans la chaine de bits
+        elem_overflow = compressed_data[indice_overflow_bit // SIZE_OF_INT] 
+        elem_overflow = get_bin(elem_overflow, SIZE_OF_INT)
+        indice_overflow_bit_in_elem = indice_overflow_bit % SIZE_OF_INT # indice dans l'entier
+
+        if indice_overflow_bit_in_elem + big_max_bits > SIZE_OF_INT:
+            # le nombre est splitté entre deux entiers
+            next_elem_overflow = compressed_data[indice_overflow_bit // SIZE_OF_INT + 1]
+            next_elem_overflow = get_bin(next_elem_overflow, SIZE_OF_INT)
+            elem_overflow += next_elem_overflow
+        
+        value_overflow = elem_overflow[indice_overflow_bit_in_elem:indice_overflow_bit_in_elem + big_max_bits]
+        # if self.config.debug: print(f"Value : 1 - {int(value[1:], 2)} --> {int(value_overflow, 2)}")
+            
+        return int(value_overflow, 2)
     
-
-
 if __name__ == "__main__":
-    compressor = Method1Compressor(Config(debug=True, max_bits=4))
+    compressor = Method2Compressor(Config(debug=True, max_bits=4))
     data = [3, 7, 15, 16, 8, 23, 1024, 4, 2, 1]
     original_data = data.copy()
     print("Original data:", data)
     compressor.compress(data)
     print("Compressed data:", data)
-    for i in range(len(original_data)):
+    for i in range(10):
         value = compressor.get(data, i)
-        print(f"Get index {i}: {value}")
+        print(f"Value at index {i}: {value}")
         if value != original_data[i]:
             print(f"Error at index {i}: expected {original_data[i]}, got {value}")
             exit(1)
@@ -207,3 +163,6 @@ if __name__ == "__main__":
         print("Error: decompressed data does not match original data")
         exit(1)
     print("Success: decompressed data matches original data")
+
+
+# python3 -m compressor.method1
