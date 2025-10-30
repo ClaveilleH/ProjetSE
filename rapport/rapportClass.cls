@@ -12,6 +12,9 @@
 \RequirePackage{amsmath, amssymb}        % Maths
 \RequirePackage{listings}                % Pour afficher du code
 \RequirePackage{xcolor}                  % Couleurs (utile pour le code)
+\usepackage{pgfplotstable}               % Pour les tableaux
+\pgfplotsset{compat=1.18}                % Compatibilité pgfplots
+\usepackage{float}                       % Pour forcer la position des figures
 
 \RequirePackage{lipsum}                  % Générer du texte factice
 
