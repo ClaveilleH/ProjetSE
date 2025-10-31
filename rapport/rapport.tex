@@ -53,7 +53,7 @@
 
 % ======================================================================================================================
 \chapter{Introduction}
-Dans le cadre de l'Unités d'Enseignement de Software Engineering-2025, il nous a été demandé de réaliser un projet individuel
+Dans le cadre de l'Unité d'Enseignement de Software Engineering 2025, il nous a été demandé de réaliser un projet individuel
 visant à étudier et implémenter des méthodes de transmission optimisée de données.
 La transmission de tableaux d’entiers constitue un problème fondamental dans de nombreux systèmes
 informatiques et réseaux, en particulier pour les applications nécessitant un échange rapide et
@@ -62,7 +62,7 @@ la performance et l’efficacité des transferts d’information sont essentiell
 
 L’objectif est d’étudier différentes méthodes de compression de ces tableaux afin de réduire le nombre
 de bits transmis tout en conservant un accès direct à chaque élément. La méthode choisie, appelée Bit Packing,
-représente chaque entier avec le minimum de bits nécessaires, regroupés ensuite dans des entiers standards
+représente chaque entier avec le minimum de bits nécessaires, regroupé ensuite dans des entiers standards
 pour la transmission. Deux variantes seront explorées : une autorisant l’écriture d’un entier compressé sur
 deux entiers consécutifs, et une qui ne le permet pas. Le projet inclut également des benchmarks pour évaluer les gains de performance.
 
@@ -105,18 +105,19 @@ Le projet est structuré autour de trois composants principaux :
 \begin{itemize}
     \item Les classes \texttt{Method1Compressor} et \texttt{Method2Compressor} implémentant les deux méthodes de compression ;
     \item Un module de \textbf{benchmark} mesurant les performances pour différentes tailles de tableaux et valeurs de \texttt{maxbit} ;
-    \item Un générateur de données permettant de produire des listes d'entiers selon plusieurs distributions (aléatoire uniforme, croissante, bruitée...).
+    \item Un générateur de données permettant de produire des listes d'entiers selon plusieurs distributions (aléatoire uniforme, croissante, bruitée).
 \end{itemize}
 
-\section{Methodes de compression}
-Les deux classes \texttt{Method1Compressor} et \texttt{Method2Compressor} héritent d'une classe de base \texttt{CompressorBase}
+\section{Méthodes de compression}
+Les deux classes \texttt{Method1Compressor} et \texttt{Method2Compressor} héritent d'une classe de base \texttt{CompressorBase},
 qui définit l'interface commune pour la compression et la décompression.
 Chaque classe implémente les méthodes \texttt{compress()}, \texttt{decompress()} et \texttt{get()} selon la logique spécifique à chaque méthode.
 
-Les deux méthodes utilisent des algorithmes différents pour gérer la répartition des bits et l'accès aux éléments compressés que nous détaillerons ci-dessous.
+Les deux méthodes utilisent des algorithmes différents pour gérer la répartition des bits et l'accès aux éléments compressés, que nous détaillerons ci-dessous.
 Nous traiterons plus tard de la gestion des débordements (overflow) lorsque les entiers à compresser dépassent la capacité allouée.
 Chaque entier compressé utilisant un nombre de bits inférieur ou égal à \texttt{maxbit} est annoté d'un préfixe 0 avant sa représentation binaire.
 Si l'entier dépasse cette capacité, il est annoté d'un préfixe 1 et stocké dans une structure dédiée aux débordements, decrite dans la section suivante.
+Dans les deux méthodes, la taille du tableau d'origine, le nombre de bits par entier (\texttt{maxbit}) et le nombre de bits utilisés pour chaque entier compressé en overflow sont stockés dans l'en-tête du tableau compressé pour faciliter la décompression.
 \subsection{Méthode 1 : Entiers scindables}
 Dans cette méthode, un entier compressé peut être réparti sur deux entiers consécutifs.
 Cela permet une utilisation plus efficace de l'espace lorsque les entiers à compresser ne s'alignent pas parfaitement avec les limites des entiers 32 bits.
@@ -181,6 +182,11 @@ Cette approche maximise l'utilisation de chaque bit disponible, mais complique l
 
     \caption{Méthode 1 — un entier peut être scindé entre deux mots (ici : 2 + 8 bits).}
 \end{figure}
+Pour l'entete, on stocke :
+Dans un entier 32 bits : la taille du tableau original (n)
+Puis dans l'entier suivant : le nombre de bits par entier compressé (maxbit) sur 6 bits et le nombre de bits utilisés pour chaque entier compressé en overflow sur 6 bits.
+
+Pour l'accès direct à un élément compressé, la méthode calcule la position exacte de l'entier dans le tableau compressé selon son indice et la taille des elements, en tenant compte des éventuels débordements et du decalage de l'entete.
 
 \subsection{Méthode 2 : Entiers non scindables}
 Dans cette méthode, chaque entier compressé doit être entièrement contenu dans un seul entier 32 bits.
@@ -251,37 +257,28 @@ car certains bits dans les entiers 32 bits peuvent rester inutilisés si le nomb
     \caption{Méthode 1 — un entier peut être scindé entre deux mots (ici : 2 + 8 bits).}
 \end{figure}
 
-% \begin{itemize}
-%     \item \textbf{Méthode 1} : On stoque les entiers compressés en permettant qu’un entier puisse être réparti sur deux entiers consécutifs.
+Pour l'entete, on stocke :
+Dans un entier 32 bits : la taille du tableau original (n)
+Puis dans l'entier suivant : le nombre de bits par entier compressé (maxbit) sur 6 bits et le nombre de bits utilisés pour chaque entier compressé en overflow sur 6 bits.
 
-
-%     \item \textbf{Méthode 2} : Lorsqu’un entier dépasse la taille maximale définie par \texttt{maxbit}, il est stocké dans un entier supplémentaire.
-%     Cette approche permet d’assurer la cohérence de la décompression sans perte de données.
-% \end{itemize}
+Pour l'accès direct à un élément compressé, la méthode calcule la position exacte de l'entier dans lequel l'élément est stocké, en fonction de son indice et de la taille des elements, en tenant compte de l'entete.
+Puis la position de l'élément à l'intérieur de cet entier est déterminée par un simple calcul modulo.
 
 % ======================================================================================================================
 \section{Gestion des débordements}
-A FAIRE ------------------------------
-La gestion des débordements est gérée diferémment selon la méthode choisie, mais utilisent le meme principe de detection.
-Lorsqu’un entier à compresser dépasse la capacité maximale définie par \texttt{maxbit}, on stoque son indice 
-\subsection{Méthode 1}
-Lorsqu’un entier dépasse la taille maximale définie par \texttt{maxbit}, on le stoque en fin de chaine
-dans un tableau dédié aux débordements. Un indicateur spécial est utilisé dans le flux compressé pour signaler la présence d’un débordement.
-Lors de la décompression, si cet indicateur est rencontré, la valeur correspondante est récupérée depuis le tableau des débordements.
-\subsection{Méthode 2}
-% \begin{itemize}
-%     \item \textbf{Méthode 1} : Lorsqu’un entier dépasse la taille maximale définie par \texttt{maxbit}, on le stoque en fin de chaine 
-
-%     \item \textbf{Méthode 2} : Lorsqu’un entier dépasse la taille maximale définie par \texttt{maxbit}, il est stocké dans un entier supplémentaire.
-%     Cette approche permet d’assurer la cohérence de la décompression sans perte de données.
-% \end{itemize}
-% Lorsqu’un entier dépasse la taille maximale définie par \texttt{maxbit}, il est stocké dans un entier supplémentaire.
-% Cette approche permet d’assurer la cohérence de la décompression sans perte de données.
+La gestion des débordements est gérée différemment selon la méthode choisie, mais utilisent le même principe de détection.
+Lorsqu’un entier à compresser dépasse la capacité maximale définie par \texttt{maxbit}, on préfixe la représentation binaire de son indice avec '1',
+ce qui permet de le différencier des entiers normaux préfixés par '0'.
+Puis cet entier est stocké dans une structure dédiée aux débordements.
+Lors de la décompression, si un entier avec le préfixe '1' est rencontré, la valeur correspondante est récupérée depuis cette structure à la fin de la décompression puis insérée à la bonne position dans le tableau décompressé.
 
 
+Dans la Méthode 1, les entiers en overflow sont stockés a la suite des entiers compressés et peut depasser sur plusieurs entiers 32 bits de la meme façon que les entiers normaux.
+
+Dans la Méthode 2, les entiers en overflow sont stockés dans des entiers 32 bits dédiés, chacun contenant un seul entier en overflow.
 
 % ======================================================================================================================
-\chapter{Résultats et Analyse des Benchmarks}
+\chapter{Résultats des Benchmarks}
 
 \section{Méthodologie de Benchmark}
 
@@ -312,7 +309,7 @@ et la génération de graphiques.
 
 \section{Résultats Expérimentaux}
 
-Aprés avoir exécuté les benchmarks selon la méthodologie décrite précédemment, nous pouvons maintenant nous intéresser aux résultats obtenus.
+Après avoir exécuté les benchmarks selon la méthodologie décrite précédemment, nous pouvons maintenant nous intéresser aux résultats obtenus.
 Dans un premier temps, nous allons examiner les temps de compression et de décompression ainsi que les temps d’accès direct aux éléments compressés
 moyen pour chaque méthode sans tenir compte des différentes distributions de données ni du nombre de bits d'encodage.
 
@@ -363,9 +360,9 @@ Voir figure \ref{fig:global_compression_times}.
 
 \subsection{Temps d’accès direct (\texttt{get})}
 
-La mesure des accès aléatoires est clairement etrange, le temps moyen d'accès direct via la méthode \texttt{get()}
+La mesure des accès aléatoires est clairement étrange, le temps moyen d'accès direct via la méthode \texttt{get()}
 semble diminuer avec l'augmentation de la taille du tableau, ce qui est contre-intuitif.  
-Cela pourrait être dû a la modification du nombre de bits utilisés pour l'encodage. Nous y reviendrons plus tard.
+Cela pourrait être dû à la modification du nombre de bits utilisés pour l'encodage. Nous y reviendrons plus tard.
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -401,11 +398,16 @@ en fonction des différentes distributions de données et du nombre de bits util
 \subsection{Nombre de bits}
 
 L'impact du nombre de bits sur les performances est significatif. En général, une augmentation du nombre de bits
-utilisés pour l'encodage conduit à une amélioration des temps de compression et de décompression, mais peut
-également augmenter le temps d'accès direct.  
+utilisés pour l'encodage conduit à une augmentation des temps de compression et de décompression.
 Les graphiques suivants illustrent ces variations en fonction de la taille du tableau et de la méthode utilisée.
 
+
+On observe que la \textbf{Méthode 1} reste plus performante que la \textbf{Méthode 2} pour des tailles de tableaux plus importantes,
+indépendamment du nombre de bits utilisés.  
+Cependant, pour des tailles plus petites, la différence de performance entre les deux méthodes est moins marquée.
+
 % heatmap
+% Méthode 1
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
@@ -418,7 +420,12 @@ Les graphiques suivants illustrent ces variations en fonction de la taille du ta
         colormap/viridis,
         point meta min=0,
         point meta max=50,
-        grid=major
+        grid=major,
+        xmode=log,                 % échelle logarithmique sur l'axe X
+        log basis x={10},
+        xtick={100,1000,10000},    % graduations souhaitées
+        % xticklabel={100,1000,10000},% labels explicites (ou {100,1k,10k})
+        xmin=90, xmax=10000         % bornes légèrement au-delà pour visibilité
     ]
 
     % Méthode 1
@@ -432,169 +439,240 @@ Les graphiques suivants illustrent ces variations en fonction de la taille du ta
         meta=time_avg,
         col sep=comma
     ] {../out/data/heatmap_method1.csv};
-    \addlegendentry{Méthode 1}
+    \addlegendentry{Temps moyen (ms)}
+
 
     \end{axis}
     \end{tikzpicture}
-    \caption{Heatmap des performances en fonction de la taille du tableau et du nombre de bits utilisés.}
+    \caption{Heatmap des performances en fonction de la taille du tableau et du nombre de bits utilisés sur la Méthode 1.}
     \label{fig:heatmap_performance}
 \end{figure}
 
 
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=1\textwidth,
+        height=0.5\textwidth,
+        xlabel={Taille du tableau $n$},
+        ylabel={Nombre de bits},
+        colorbar,
+        colormap/viridis,
+        point meta min=0,
+        point meta max=50,
+        grid=major,
+        xmode=log,                 % échelle logarithmique sur l'axe X
+        log basis x={10},
+        xtick={100,1000,10000},    % graduations souhaitées
+        % xticklabel={100,1000,10000},% labels explicites (ou {100,1k,10k})
+        xmin=90, xmax=10000         % bornes légèrement au-delà pour visibilité
+    ]
 
+    % Méthode 2
+    \addplot [
+        matrix plot*,
+        mesh/cols=3,  % 3 valeurs de n
+        point meta=explicit
+    ] table     [
+        x=n,
+        y=max_bits,
+        meta=time_avg,
+        col sep=comma
+    ] {../out/data/heatmap_method2.csv};
+    \addlegendentry{Temps moyen (ms)}
 
-
-
-
-
-\section{Visualisations et Interprétation}
-
-Les graphiques 2D permettent une lecture intuitive de l’évolution des performances pour chaque paramètre.  
-Afin de mieux comprendre les interactions entre la taille du tableau, le nombre de bits et le temps d’exécution,
-des \textbf{graphiques 3D} et \textbf{heatmaps} ont été utilisés.  
-Ces visualisations offrent une représentation synthétique des zones de performance optimale,
-et mettent en évidence les compromis entre compacité et vitesse.
-
-Par exemple, les heatmaps montrent clairement que la \textbf{Méthode 2} est plus efficace pour des tailles modérées
-et un encodage limité (moins de 12 bits), tandis que la \textbf{Méthode 1} devient plus intéressante lorsque la
-taille des données et le nombre de bits augmentent.
-
-\section{Discussion}
-
-L’analyse des résultats suggère que le choix entre les deux méthodes dépend du contexte d’utilisation :
-\begin{itemize}
-    \item pour des tableaux de taille moyenne et un besoin de vitesse, la \textbf{Méthode 2} est à privilégier ;
-    \item pour des grands volumes ou des tailles de mots variables, la \textbf{Méthode 1} offre un meilleur compromis
-          entre compacité et flexibilité.
-\end{itemize}
-
-L’intégration d’une stratégie adaptative, sélectionnant automatiquement la méthode la plus appropriée selon
-le profil des données, pourrait constituer une amélioration future du système.
-
-
-
-
-
-\chapter{Benchmark}
-Les benchmarks ont été réalisés automatiquement pour des tailles de tableau $n = 100, 1000 et 10000$
-et des valeurs de \texttt{maxbit} comprises entre 4 et 20 (pas de 2).
-Chaque exécution mesure :
-\begin{itemize}
-    \item le temps de compression,
-    \item le temps de décompression,
-    \item le temps moyen d’accès via la méthode \texttt{get()}.
-\end{itemize}
-Les résultats sont enregistrés dans un fichier JSON et agrégés dans un CSV pour exploitation graphique.
-
-
-
-
-
-
-
-% ======================================================================================================================
-% ======================================================================================================================
-\chapter{Conclusion et Perspectives}
-
-Ce projet a permis de comparer deux méthodes de compression d'entiers basées sur le principe
-du \textit{Bit Packing}. Les résultats des benchmarks montrent que le compromis entre performance
-et complexité dépend fortement du contexte d’utilisation.
-
-Les perspectives d’amélioration incluent :
-\begin{itemize}
-    \item l’utilisation de parallélisme pour accélérer la compression,
-    \item l’intégration d’un mode adaptatif choisissant automatiquement la méthode la plus efficace,
-    \item l’ajout d’un module de visualisation temps réel des performances.
-\end{itemize}
-% ======================================================================================================================
-
-\chapter{Résultats expérimentaux}
-
-\section{Temps de compression}
-% ton graphique ici
-
-\section{Temps de décompression}
-% même style de graphique
-
-\section{Temps moyen d'accès (get())}
-% encore un graphique
-
-\section{Analyse des résultats}
-Les résultats montrent que la méthode 1, bien que plus coûteuse en mémoire dans certains cas,
-offre de meilleures performances en compression et en décompression lorsque la taille du tableau augmente.
-La méthode 2 reste plus stable, mais devient moins efficace pour de grands volumes de données.
-
-
-
-\chapter{Résultats des Benchmarks}
-
-\section{Temps de compression}
-
-\begin{figure}[h!]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    xlabel={Taille du tableau $n$},
-    ylabel={Temps de compression (ms)},
-    legend pos=north west,
-    width=0.8\textwidth,
-    height=0.5\textwidth,
-    grid=major,
-    cycle list name=color list
-]
-
-% Méthode 1
-% \addplot table[x=n, y=compress_time_avg, col sep=comma, select expr={\thisrow{method}=="method1"}]{bench_results_agg.csv};
-\addlegendentry{Method 1}
-\addplot table[
-    x=n, y=compress_time_avg,
-    col sep=comma,
-    row predicate/.code={
-        \ifnum\pdfstrcmp{\thisrow{method}}{method1}=0
-            \edef\pgfmathresult{1}
-        \else
-            \edef\pgfmathresult{0}
-        \fi
-    }
-] {../out/data/bench_results_agg.csv};
-
-% Méthode 2
-% \addplot table[x=n, y=compress_time_avg, col sep=comma, select expr={\thisrow{method}=="method2"}]{bench_results_agg.csv};
-% \addlegendentry{Method 2}
-
-\end{axis}
-\end{tikzpicture}
-\caption{Comparaison des temps de compression entre les deux méthodes selon la taille du tableau.}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Heatmap des performances en fonction de la taille du tableau et du nombre de bits utilisés sur la Méthode 2.}
+    \label{fig:heatmap_performance}
 \end{figure}
 
 
-% \lipsum[1-5] % Texte factice pour l'introduction
-% \chapter{Introduction}
-% Ici tu présentes le contexte et les objectifs de ton projet.
+Maintenant que nous avons examiné les résultats en fonction du nombre de bits, nous allons analyser l'impact des différentes distributions de données sur les performances des deux méthodes.
+\subsection{Distribution des données}
+
+% tableau comparatif 
+% ['uniform_small', 'skewed', 'outlier']
+\begin{table}[H]
+    \centering
+    \caption{Comparaison des temps moyens (en ms) pour chaque méthode et distribution selon la taille du tableau $n$.}
+    \label{tab:benchmark_results}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{\textbf{Distribution}} & \multirow{2}{*}{$n$} & \multicolumn{2}{c|}{\textbf{Temps moyen (ms)}} \\
+        \cline{3-4}
+         & & \textbf{Méthode 1} & \textbf{Méthode 2} \\
+        \hline
+        \multirow{3}{*}{Uniforme} 
+            & 1000  & 0.19 & 0.27 \\ \cline{2-4}
+            & 10000 & 1.72 & 3.04  \\ \cline{2-4}
+            & 100000 & 24.75 & 74.61 \\ 
+        \hline
+        \multirow{3}{*}{Biaisée} 
+            & 1000  & 0.20 & 0.26 \\ \cline{2-4}
+            & 10000 & 0.82 & 3.03 \\ \cline{2-4}
+            & 100000 & 24.77 & 74.47 \\ 
+        \hline
+        \multirow{3}{*}{Avec outliers} 
+            & 1000  & 0.17 & 0.24 \\ \cline{2-4}
+            & 10000 & 1.82  & 3.07  \\ \cline{2-4}
+            & 100000 & 24.43 & 74.05 \\ 
+        \hline
+    \end{tabular}
+\end{table}
+
+% En conclusion, la méthode 1 avec un encodage de 10 bits ou moins offre des performances optimales pour des tailles de tableaux importantes.
+\section{Discussion des résultats}
+Les résultats des benchmarks montrent clairement que la \textbf{Méthode 1} surpasse la \textbf{Méthode 2} en termes de temps de compression et de décompression,
+surtout pour des tailles de tableaux plus importantes.  
+La flexibilité offerte par la possibilité de scinder les entiers entre deux mots permet une meilleure utilisation de l’espace et réduit le nombre d’opérations nécessaires.
+Cependant, la \textbf{Méthode 2} présente une logique plus simple pour l’accès direct aux éléments compressés, ce qui peut être avantageux dans certains contextes.  
+L’analyse des résultats en fonction du nombre de bits utilisés pour l’encodage révèle que la performance diminue avec l’augmentation du nombre de bits,
+ce qui est attendu car cela augmente la complexité du codage.  
+Enfin, l’impact des différentes distributions de données semble limité, suggérant que les deux méthodes sont robustes face à divers types de données.
+
+\chapter{Temps de transmission}
+Nous allons maintenant estimer les temps de transmission des données compressées en fonction des performances mesurées précédemment.
+En prenant la meilleure méthode (Méthode 1) et en utilisant les temps moyens de compression et de décompression obtenus lors des benchmarks,
+nous pouvons estimer les temps de transmission pour différentes tailles de tableaux et configurations de bits.
+\section{Estimation des temps de transmission}
+\subsection{Transmission des données compressées}
+Pour estimer les temps de transmission, nous utilisons la formule suivante :
+\begin{equation}
+    T_{total} = T_{compression} + T_{transmission} + T_{decompression}
+\end{equation}
+où :
+\begin{itemize}
+    \item $T_{compression}$ est le temps moyen de compression mesuré lors des benchmarks ;
+    \item $T_{transmission}$ est le temps de transmission des données compressées, calculé en fonction de la taille des données et du débit du canal de transmission ;
+    \item $T_{decompression}$ est le temps moyen de décompression mesuré lors des benchmarks.   
+\end{itemize}
+Simplifiable en combinant les termes de compression et décompression en un seul terme $T_{processus}$ :
+\begin{equation}
+    T_{total} = T_{processus} + T_{transmission}
+\end{equation}
+où $T_{processus} = T_{compression} + T_{decompression}$.
+
+\subsection{Transmission des données non compressées}
+Pour les données non compressées, le temps total de transmission est simplement le temps de transmission des données brutes :
+\begin{equation}
+    T_{total\_brut} = T_{transmission\_brut}
+\end{equation}
+
+Pour le temps de transmission brut, nous pouvons utiliser la formule suivante :
+\begin{equation}
+    T_{transmission\_brut} = \frac{T_{brut}}{D_{canal}}
+\end{equation}
+où :
+\begin{itemize}
+    \item $T_{brut}$ est la taille des données brutes à transmettre ;
+    \item $D_{canal}$ est le débit du canal de transmission.
+\end{itemize}
 
 
-% \chapter{Travaux Réalisés}
-% Explique la méthodologie, les outils utilisés, ton code, etc.
+\section{Comparaison espace utilisé}
+Pour comparer l'espace utilisé entre les données compressées et non compressées, nous calculons le ratio suivant :
+\begin{equation}
+    R_{espace} = \frac{E_{compressé}}{E_{brut}}
+\end{equation}
+où :
+\begin{itemize}
+    \item $E_{compressé}$ est la taille des données compressées ;
+    \item $E_{brut}$ est la taille des données brutes.
+\end{itemize}
+Ce ratio nous permet de quantifier l'efficacité de la compression en termes d'espace utilisé.
 
-% \section{Outils utilisés}
-% Exemple d’outils : Python, C++, Git, Docker...
+La taille des données brutes pour un tableau de $n$ entiers est donnée par :
+\begin{equation}
+    E_{brut} = n \times 32 \text{ bits}
+\end{equation}
 
-% \section{Exemple de code}
-% Voici un exemple en LaTeX :
-% \begin{lstlisting}[language=C++]
-% #include <iostream>
-% using namespace std;
+En prenant n=10 000 éléments, on obtient :
+\begin{equation}
+    E_{brut} = 10 000 \times 32 = 320000 \text{ bits}
+\end{equation}
 
-% int main() {
-%     cout << "Hello World!";
-%     return 0;
-% }
-% \end{lstlisting}	
+La moyenne de l'espace utilisé aprés compression calculé dans les benchmarks est, pour la Méthode 1, avec tout les encodages confondus, 
+toutes les distributions confondues, et pour une taille de tableau de 10 000 éléments est de : 161059 bits
 
-% \chapter{Résultats}
-% Explique ce que tu as obtenu.
+Ce qui nous donne un ratio d'espace utilisé de :
+\begin{equation}
+    R_{espace} = \frac{161059}{320000} \approx 0.503
+\end{equation}
+Ce qui signifie que la compression réduit l'espace utilisé d'environ 49.7\% par rapport aux données brutes.
 
-% \chapter{Conclusion et Perspectives}
-% Résumé de ton projet et idées pour la suite.
+
+\section{Estimation des temps totaux de transmission}
+En prenant la variable $t$ comme le temps de transmission par bit, nous allons a partir de quelle taille de chaine $n$ la transmission compressée devient intéressante.
+Pour cela, il faut résoudre l'inéquation suivante :
+\begin{equation}
+    T_{compression/decompression} + T_{transmission} < T_{transmission\_brut}
+\end{equation}
+En remplaçant les termes par leurs expressions respectives, on obtient :
+\begin{equation}
+    T_{compression/decompression} + E_{compressé} \times t < E_{brut} \times t
+\end{equation}
+Avec $E_{compressé}, la taille des données compressées$ et $E_{brut}, la taille des données brutes$.
+
+
+En remplaçant les tailles par leurs expressions en fonction de $n$, on a :
+\begin{equation}
+    T_{compression/decompression} + (n \times 32 \times R_{espace}) \times t < (n \times 32) \times t
+\end{equation}
+Avec $R_{espace}$ le ratio d'espace utilisé calculé précédemment qui vaut environ 0.503.
+
+
+En réarrangeant les termes et simplifiant, on obtient :
+\begin{equation}
+    T_{compression/decompression} < (n \times 32 \times (1 - 0.503)) \times t
+\end{equation}
+Enfin, on peut isoler $n$ pour trouver la taille minimale du tableau à partir de laquelle la transmission compressée devient avantageuse :
+\begin{equation}
+    n > \frac{T_{compression/decompression}}{32 \times (1 - 0.503) \times t}
+\end{equation}  
+En utilisant les valeurs moyennes de $T_{compression/decompression}$ obtenues lors des benchmarks pour une taille de tableau de 10 000 éléments,
+nous pouvons calculer la valeur de $n$ pour différentes latences $t$.
+\begin{table}[H]
+    \centering
+    \caption{Taille minimale du tableau $n$ pour que la transmission compressée soit avantageuse en fonction de la latence $t$.}
+    \label{tab:transmission_thresholds}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Latence par bit $t$ (µs)} & \textbf{Taille minimale du tableau $n$} \\
+        \hline
+        0.01 &  1286 \\
+        \hline
+        0.1  &  129 \\
+        \hline
+        1    &  13  \\
+        \hline
+        10   &  2   \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\chapter{Problèmes observés et solutions proposées}
+
+Lors de l'implémentation et des tests, plusieurs problèmes pratiques sont apparus. Nous listons
+ci-dessous les symptômes, leur origine probable et la solution retenue ou proposée.
+
+\section{Padding du dernier mot — zéros « fantômes » à la décompression}
+Lorsque le flux compressé est segmenté en mots de 32 bits, le dernier mot est souvent partiellement rempli.
+Si la décompression lit bit-à-bit sans information sur la longueur originale, elle peut produire des zéros
+supplémentaires à la fin du tableau décompressé — éléments qui n'existaient pas dans l'original.
+
+Absence d'information explicite sur le nombre d'éléments originaux ; le padding binaire (zéros) du dernier mot
+est interprété comme des éléments valides.
+
+Stocker la \textbf{longueur originale} $n$ dans l'en-tête du flux compressé (mot 0). Lors de la décompression,
+on lit d'abord $n$ et on n'extrait que $n$ entiers utiles, en ignorant tout padding. Cette solution est simple,
+robuste et peu coûteuse (32 bits).
+
+\section{Nombre de bits pour l'index overflow}
+Un problème qui m'a valu beaucoup de temps est le fait que si le nombre d'éléments en overflow dépasse
+la capacité d'indexation définie par $2^{\texttt{max\_bits}}$, la décompression ne peut plus retrouver les valeurs en overflow.
+Pour résoudre ce problème, je fais en sorte que le i-ème entier en overflow dans le tableau compressé soit stocké dans le i-ème entier dans la zone overflow.
+Ainsi, l'indexation devient triviale et ne dépend plus du nombre d'éléments en overflow.
 
 \end{document}

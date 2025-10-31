@@ -21,6 +21,8 @@ from compressor.base import Config
 out_dir = "out"
 data_dir = f"{out_dir}/data"
 
+SIZE_OF_INT = 32
+
 
 # -----------------------------
 # PARAMÈTRES DE LA GRILLE
@@ -46,6 +48,7 @@ json_summary = f"{data_dir}/bench_summary.json"
 # -----------------------------
 
 def generate_array(n, max_bits, seed, distribution='uniform_small'):
+    """Génère un tableau d'entiers selon la distribution spécifiée"""
     if distribution == 'uniform_small':
         rng = random.Random(seed)
         return [rng.randint(0, 2**max_bits - 1) for _ in range(n)]
@@ -63,6 +66,7 @@ def generate_array(n, max_bits, seed, distribution='uniform_small'):
 #     return [rng.randint(0, 2**max_bits - 1) for _ in range(n)]
 
 def generate_skewed_array(n, max_bits, seed):
+    """Génère un tableau d'entiers avec une distribution biaisée"""
     rng = random.Random(seed)
     arr = []
     for _ in range(n):
@@ -73,6 +77,7 @@ def generate_skewed_array(n, max_bits, seed):
     return arr
 
 def generate_outlier_array(n, max_bits, seed):
+    """Génère un tableau d'entiers avec quelques outliers très grands"""
     rng = random.Random(seed)
     arr = [rng.randint(0, 2**(max_bits//2) - 1) for _ in range(n)]
     # ajouter 1 ou 2 outliers
@@ -308,9 +313,90 @@ def gen_csv_rapport():
                             'time_avg': compress_avg + decompress_avg
                         })
 
+            # Moyenne temps de compression + décompression par methode selon la distribution
+            with open(f"{data_dir}/transmission_{method}.csv", 'w', newline='') as f_transmission:
+                writer_transmission = csv.DictWriter(f_transmission, fieldnames=['distribution', 'n', 'time_avg'])
+                writer_transmission.writeheader()
+                
+                for distribution in distributions:
+                    for n in sorted(ns):
+                        df_subset = df_method[(df_method['distribution'] == distribution) & (df_method['n'] == n)]
+                        compress_avg = df_subset['compress_time_avg'].mean() * 1000  # en ms
+                        decompress_avg = df_subset['decompress_time_avg'].mean() * 1000
+                        
+                        writer_transmission.writerow({
+                            'distribution': distribution,
+                            'n': n,
+                             'time_avg': compress_avg + decompress_avg
+                        })
+
+def test_distributions():
+    n = 20
+    print("Testing different distributions for n=20")
+    for distribution in distributions:
+        arr = generate_array(n, 10, seed_global, distribution=distribution)
+        print(f"Distribution: {distribution}, Sample: {arr[:10]}...")
+
+def test_espace(n, max_bits, seed, distribution, method):
+    arr = generate_array(n, max_bits, seed, distribution=distribution)
+    c = CompressorFactory.get_compressor(method, Config(max_bits=max_bits))
+    arr_copy = arr.copy()
+    c.compress(arr_copy)
+    # original_size = n * 4  # taille originale en octets (int32)
+    # compressed_size = len(arr_copy) * 4  # taille compressée en octets
+    # original_size = sys.getsizeof(arr)  # taille originale en octets (int32)
+    # compressed_size = sys.getsizeof(arr_copy)  # taille compressée en octets
+    original_size = n * SIZE_OF_INT
+    compressed_size = len(arr_copy) * SIZE_OF_INT
+    ratio = compressed_size / original_size
+    print(f"Method: {method}, Distribution: {distribution}, n: {n}, max_bits: {max_bits}")
+    print(f"Original size: {original_size} bits, Compressed size: {compressed_size} bits, Ratio: {ratio:.4f}")
+    return original_size, compressed_size, ratio
+
+def test_space_all():
+    number_of_tests = len(distributions) * len(methods) * 5 * 3
+    current_test = 1
+    raw_space_usages = []
+    compressed_space_usages = []
+    ratios = []
+    with open(f"{data_dir}/space_usage.csv", 'w', newline='') as f_space:
+        fieldnames = ['distribution', 'method', 'n', 'max_bits', 'raw_space_usage', 'compressed_space_usage', 'compression_ratio']
+        writer_space = csv.DictWriter(f_space, fieldnames=fieldnames)
+        writer_space.writeheader()
+
+        for distribution in distributions:
+            for method in methods:
+                for n in [10000]:
+                    for max_bits in [4, 8, 12, 16, 20]:
+                        print(f"Test {current_test}/{number_of_tests}")
+                        current_test += 1
+                        original_size, compressed_size, ratio = test_espace(n, max_bits, seed_global, distribution, method)
+                        writer_space.writerow({
+                            'distribution': distribution,
+                            'method': method,
+                            'n': n,
+                            'max_bits': max_bits,
+                            'raw_space_usage': original_size,
+                            'compressed_space_usage': compressed_size,
+                            'compression_ratio': ratio
+                        })
+                        ratios.append(ratio)
+                        raw_space_usages.append(original_size)
+                        compressed_space_usages.append(compressed_size)
+    avg_ratio = sum(ratios) / len(ratios)
+    avg_raw_space = sum(raw_space_usages) / len(raw_space_usages)
+    avg_compressed_space = sum(compressed_space_usages) / len(compressed_space_usages)
+    print(f"Average compression ratio across all tests: {avg_ratio:.4f}")
+    print(f"Average raw space usage across all tests: {avg_raw_space:.4f}")
+    print(f"Average compressed space usage across all tests: {avg_compressed_space:.4f}")
+
 
 if __name__ == "__main__":
 # Code de benchmark principal ici
+    # test_distributions()
+    
     # main()
-    make_agg_csv()
-    gen_csv_rapport()
+    test_space_all()
+
+    # make_agg_csv()
+    # gen_csv_rapport()

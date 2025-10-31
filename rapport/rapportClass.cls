@@ -19,6 +19,10 @@
 \RequirePackage{lipsum}                  % Générer du texte factice
 
 
+% Packages supplémentaires pour les tableaux
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
 
 
 % Marges et page

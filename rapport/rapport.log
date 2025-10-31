@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.9.17)  30 OCT 2025 19:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.9.17)  31 OCT 2025 15:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -790,37 +790,44 @@ Package: lipsum 2021-09-20 v2.7 150 paragraphs of Lorem Ipsum dummy text
 \l__lipsum_b_int=\count335
 
 (/usr/share/texlive/texmf-dist/tex/latex/lipsum/lipsum.ltd.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
+\multirow@colwidth=\skip56
+\multirow@cntb=\count336
+\multirow@dima=\skip57
+\bigstrutjot=\dimen292
+)
 (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
 
 (/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
-\Gm@cnth=\count336
-\Gm@cntv=\count337
-\c@Gm@tempcnt=\count338
-\Gm@bindingoffset=\dimen292
-\Gm@wd@mp=\dimen293
-\Gm@odd@mp=\dimen294
-\Gm@even@mp=\dimen295
-\Gm@layoutwidth=\dimen296
-\Gm@layoutheight=\dimen297
-\Gm@layouthoffset=\dimen298
-\Gm@layoutvoffset=\dimen299
+\Gm@cnth=\count337
+\Gm@cntv=\count338
+\c@Gm@tempcnt=\count339
+\Gm@bindingoffset=\dimen293
+\Gm@wd@mp=\dimen294
+\Gm@odd@mp=\dimen295
+\Gm@even@mp=\dimen296
+\Gm@layoutwidth=\dimen297
+\Gm@layoutheight=\dimen298
+\Gm@layouthoffset=\dimen299
+\Gm@layoutvoffset=\dimen300
 \Gm@dimlist=\toks49
 )
 (/usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
 Package: fancyhdr 2022/11/09 v4.1 Extensive control of page headers and footers
 
-\f@nch@headwidth=\skip56
-\f@nch@O@elh=\skip57
-\f@nch@O@erh=\skip58
-\f@nch@O@olh=\skip59
-\f@nch@O@orh=\skip60
-\f@nch@O@elf=\skip61
-\f@nch@O@erf=\skip62
-\f@nch@O@olf=\skip63
-\f@nch@O@orf=\skip64
+\f@nch@headwidth=\skip58
+\f@nch@O@elh=\skip59
+\f@nch@O@erh=\skip60
+\f@nch@O@olh=\skip61
+\f@nch@O@orh=\skip62
+\f@nch@O@elf=\skip63
+\f@nch@O@erf=\skip64
+\f@nch@O@olf=\skip65
+\f@nch@O@orf=\skip66
 )
 (/usr/share/texmf/tex/latex/lm/lmodern.sty
 Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
@@ -868,15 +875,19 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 (/usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2023/10/27 v2.16 Sectioning titles
 \ttl@box=\box72
-\beforetitleunit=\skip65
-\aftertitleunit=\skip66
-\ttl@plus=\dimen300
-\ttl@minus=\dimen301
+\beforetitleunit=\skip67
+\aftertitleunit=\skip68
+\ttl@plus=\dimen301
+\ttl@minus=\dimen302
 \ttl@toksa=\toks50
-\titlewidth=\dimen302
-\titlewidthlast=\dimen303
-\titlewidthfirst=\dimen304
-)) (./rapport.aux)
+\titlewidth=\dimen303
+\titlewidthlast=\dimen304
+\titlewidthfirst=\dimen305
+)) (./rapport.aux
+
+LaTeX Warning: Label `fig:heatmap_performance' multiply defined.
+
+)
 \openout1 = `rapport.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
@@ -901,16 +912,16 @@ LaTeX Info: Redefining \degres on input line 23.
 LaTeX Info: Redefining \up on input line 23.
  (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count339
-\scratchdimen=\dimen305
+\scratchcounter=\count340
+\scratchdimen=\dimen306
 \scratchbox=\box73
-\nofMPsegments=\count340
-\nofMParguments=\count341
+\nofMPsegments=\count341
+\nofMParguments=\count342
 \everyMPshowfont=\toks51
-\MPscratchCnt=\count342
-\MPscratchDim=\dimen306
-\MPnumerator=\count343
-\makeMPintoPDFobject=\count344
+\MPscratchCnt=\count343
+\MPscratchDim=\dimen307
+\MPnumerator=\count344
+\makeMPintoPDFobject=\count345
 \everyMPtoPDFconversion=\toks52
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -927,7 +938,7 @@ Package hyperref Info: Link coloring OFF on input line 23.
 \@outlinefile=\write4
 \openout4 = `rapport.out'.
 
-\c@lstlisting=\count345
+\c@lstlisting=\count346
 
 Package pgfplots notification 'compat/show suggested version=true': document ha
 s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
@@ -966,7 +977,7 @@ s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logo.png, id=119, 250.536pt x 105.7551pt>
+<logo.png, id=111, 250.536pt x 105.7551pt>
 File: logo.png Graphic file (type png)
 <use logo.png>
 Package pdftex.def Info: logo.png  used on input line 30.
@@ -1016,7 +1027,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-6.
+4.
 
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -1025,7 +1036,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.21 ...}{\numberline {5}Benchmark}{13}{chapter.5}
+l.22 ...es non compressées}{13}{subsection.5.1.2}
                                                   % [1
 
 ])
@@ -1058,17 +1069,17 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.271 \subsection{Méthode 2}
-                             
+l.263 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.271 \subsection{Méthode 2}
-                             ] [7]
+l.263 
+      ] [7]
 Chapitre 4.
 
-Overfull \hbox (3.31557pt too wide) in paragraph at lines 295--296
+Overfull \hbox (3.31557pt too wide) in paragraph at lines 292--293
 []\T1/lmr/m/n/12 le $[]$ des en-tiers (\T1/lmtt/m/n/12 al�atoire uniforme\T1/lm
 r/m/n/12 , \T1/lmtt/m/n/12 croissante \T1/lmr/m/n/12 ou \T1/lmtt/m/n/12 bruit�e
 \T1/lmr/m/n/12 ). 
@@ -1077,18 +1088,18 @@ r/m/n/12 , \T1/lmtt/m/n/12 croissante \T1/lmr/m/n/12 ou \T1/lmtt/m/n/12 bruit�e
 [8
 
 ]
-Package pgfplots info on input line 347: Using 'lua backend=false' for axis: xm
+Package pgfplots info on input line 344: Using 'lua backend=false' for axis: xm
 ode=log unsupported (yet).
 PGFPlots: reading {../out/data/moy_method1.csv}
 PGFPlots: reading {../out/data/moy_method2.csv}
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 364.
-Package pgfplots info on input line 382: Using 'lua backend=false' for axis: xm
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 361.
+Package pgfplots info on input line 379: Using 'lua backend=false' for axis: xm
 ode=log unsupported (yet).
 PGFPlots: reading {../out/data/moy_get_method1.csv}
 PGFPlots: reading {../out/data/moy_get_method2.csv}
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 3
-92.
+89.
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [9{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/
@@ -1097,11 +1108,13 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.397 
+l.394 
       ]
+Package pgfplots info on input line 429: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
 PGFPlots: reading {../out/data/heatmap_method1.csv}
 
-Overfull \hbox (33.82372pt too wide) in paragraph at lines 438--439
+Overfull \hbox (45.78885pt too wide) in paragraph at lines 446--447
  [][] 
  []
 
@@ -1110,64 +1123,104 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.442 
-      ] [11{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}
+l.450 
+      ]
+Package pgfplots info on input line 470: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {../out/data/heatmap_method2.csv}
+
+Overfull \hbox (45.78885pt too wide) in paragraph at lines 486--487
+ [][] 
+ []
+
+[11
 pdfTeX warning (ext4): destination with the same identifier (name{figure.4.3}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.478 \chapter
-              {Benchmark}] [12]
+l.524 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.4}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.524 
+      ] [12
+pdfTeX warning (ext4): destination with the same identifier (name{table.4.1}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.535 \chapter
+              {Temps de transmission}]
 Chapitre 5.
 [13
 
 ]
-Chapitre 6.
-[14
 
-]
-Chapitre 7.
+LaTeX Warning: Command \' invalid in math mode on input line 577.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 581.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 614.
+
+[14{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}]
+
+LaTeX Warning: Command \' invalid in math mode on input line 616.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 616.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 616.
+
+
+LaTeX Warning: Command \' invalid in math mode on input line 616.
+
 [15
-
-]
-Chapitre 8.
-PGFPlots: reading {../out/data/bench_results_agg.csv}
-[16
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{figure.8.1}) 
-has been already used, duplicate ignored
+pdfTeX warning (ext4): destination with the same identifier (name{table.5.1}) h
+as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.600 \end{document}
-                    ] (./rapport.aux)
+l.655 \chapter
+              {Problèmes observés et solutions proposées}]
+Chapitre 6.
+[16
+
+] (./rapport.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
+
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `rapport.out' has not changed.
-(rerunfilecheck)             Checksum: C162E8CDDFF3AAA2D0DC41598C1A7843;5234.
+(rerunfilecheck)             Checksum: 1D1E51266A97A9D16143F50FFAA9CE94;5864.
  ) 
 Here is how much of TeX's memory you used:
- 36465 strings out of 476153
- 832355 string characters out of 5794326
- 1946975 words of memory out of 5000000
- 57833 multiletter control sequences out of 15000+600000
- 606788 words of font info for 69 fonts, out of 8000000 for 9000
+ 36569 strings out of 476153
+ 833989 string characters out of 5794326
+ 1956975 words of memory out of 5000000
+ 57916 multiletter control sequences out of 15000+600000
+ 613786 words of font info for 74 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 129i,20n,129p,771b,2684s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 129i,20n,129p,771b,2687s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmcsc10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></
-usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/p
-ublic/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/shar
-e/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/
-lmri12.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf
-/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt1
-0.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on rapport.pdf (17 pages, 303897 bytes).
+usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/p
+ublic/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></usr/shar
+e/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm
+/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf/
+fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtk10
+.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts
+/type1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb>
+Output written on rapport.pdf (17 pages, 346573 bytes).
 PDF statistics:
- 320 PDF objects out of 1000 (max. 8388607)
- 269 compressed objects within 3 object streams
- 52 named destinations out of 1000 (max. 500000)
- 248 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 345 PDF objects out of 1000 (max. 8388607)
+ 287 compressed objects within 3 object streams
+ 65 named destinations out of 1000 (max. 500000)
+ 238 words of extra memory for PDF output out of 10000 (max. 10000000)
 
