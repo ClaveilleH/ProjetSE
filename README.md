@@ -30,7 +30,7 @@ ProjetSE/
 │
 ├── out/                # Dossiers pour résultats de benchmark / CSV / graphiques
 │   ├── data/           # Fichiers CSV générés par les benchmarks
-│   └── *.png           # Graphiques générés
+│   └── graphs/         # Graphiques générés à partir des CSV
 │
 ├── benchmarks.py       # Script pour exécuter les benchmarks
 │

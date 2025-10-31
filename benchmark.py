@@ -395,8 +395,8 @@ if __name__ == "__main__":
 # Code de benchmark principal ici
     # test_distributions()
     
-    # main()
+    main()
     test_space_all()
 
-    # make_agg_csv()
-    # gen_csv_rapport()
+    make_agg_csv()
+    gen_csv_rapport()
