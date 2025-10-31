@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Charger le CSV brut
-csv_file = "bench_results_raw.csv"
+csv_file = "out/data/bench_results_raw.csv"
 df = pd.read_csv(csv_file)
 
 # Grouper les données par méthode, max_bits et n, puis calculer la moyenne

@@ -42,7 +42,6 @@ ProjetSE/
 
 ```
 
-
 ## 🚀 Exécution
 
 Un exemple d'execution est fourni avec le fichier `quick_test.py`
@@ -56,3 +55,10 @@ Et afin de générer les CSV, vous pouvez utiliser le fichier `benchmark.py`
 ```
 python3 benchmark.py
 ```
+
+Ainsi qu'un script `draw.py` pour générer les graphiques à partir des CSV
+
+```
+python3 draw.py
+```
+Assurez-vous d'avoir les dépendances nécessaires installées, notamment `pandas` et `matplotlib`, pour exécuter le script de dessin.
