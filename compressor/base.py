@@ -12,7 +12,7 @@ class Config:
 
 
 class CompressorBase(ABC):
-
+    """Classe de base pour les compresseurs d'entiers."""
     def __init__(self, config: Optional[Config] = None) -> None:
         if config is None:  
             config = Config()
